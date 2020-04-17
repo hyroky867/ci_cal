@@ -10,7 +10,10 @@
 	},
 	"require-dev": {
 		"mikey179/vfsstream": "1.6.*",
-		"phpunit/phpunit": "8.5.*"
+		"phpunit/phpunit": "8.5.*",
+		"squizlabs/php_codesniffer": "*",
+		"phpmd/phpmd": "^2.8",
+		"friendsofphp/php-cs-fixer": "^2.16"
 	},
 	"autoload-dev": {
 		"psr-4": {
