@@ -9,6 +9,7 @@
 
 PHPCS_BIN=./vendor/bin/phpcs
 PHPMD_BIN=./vendor/bin/phpmd
+PHP_CS_FIXER_BIN=./vendor/bin/php-cs-fixer
 #PHPSTAN_BIN=./vendor/bin/phpstan
 PHPCS_CODING_STANDARD=PEAR
 PHPCS_IGNORE=
@@ -29,16 +30,21 @@ if [ ! -x $PHPCS_BIN ]; then
 fi
 
 # simple check if mess detector is set up correctly
-if [ ! -x $PHPCS_BIN ]; then
+if [ ! -x $PHPMD_BIN ]; then
     echo "PHP Mess Detector bin not found or executable -> $PHPMD_BIN"
     exit 1
 fi
 
 # simple check if PHPStan is set up correctly
-if [ ! -x $PHPSTAN_BIN ]; then
-    echo "PHPStan bin not found or executable -> $PHPSTAN_BIN"
+if [ ! -x $PHP_CS_FIXER_BIN ]; then
+    echo "php-cs-fixer bin not found or executable -> $PHP_CS_FIXER_BIN"
     exit 1
 fi
+
+#if [ ! -x $PHPSTAN_BIN ]; then
+#    echo "PHPStan bin not found or executable -> $PHPSTAN_BIN"
+#    exit 1
+#fi
 
 # stolen from template file
 if git rev-parse --verify HEAD
@@ -172,6 +178,22 @@ if [ $PHPMD_RETVAL -ne 0 ]; then
     # delete temporary copy of staging area
     rm -rf $TMP_STAGING
     exit $PHPMD_RETVAL
+fi
+
+echo "$PHP_CS_FIXER_BIN fix $TMP_STAGING --diff --config ".php_cs""
+PHP_CS_FIXER_OUTPUT=$($PHP_CS_FIXER_BIN fix $TMP_STAGING -v --dry-run --allow-risky=yes)
+PHP_CS_FIXER_RETVAL=$?
+
+if [ $PHP_CS_FIXER_RETVAL -ne 0 ]; then
+    if [ "$FILE_OUTPUT" == "1" ]; then
+        echo "$PHP_CS_FIXER_OUTPUT"
+        echo "$PHP_CS_FIXER_OUTPUT" > php_cs_fixer.log
+    else
+        echo "$PHP_CS_FIXER_OUTPUT"
+    fi
+    # delete temporary copy of staging area
+    rm -rf $TMP_STAGING
+    exit $PHP_CS_FIXER_RETVAL
 fi
 
 # Larastan

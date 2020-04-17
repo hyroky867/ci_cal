@@ -127,3 +127,4 @@ nb-configuration.xml
 /.phpunit.*.cache
 
 .tmp_staging/
+.php_cs.cache
