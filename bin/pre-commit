@@ -10,10 +10,10 @@
 PHPCS_BIN=./vendor/bin/phpcs
 PHPMD_BIN=./vendor/bin/phpmd
 PHP_CS_FIXER_BIN=./vendor/bin/php-cs-fixer
-#PHPSTAN_BIN=./vendor/bin/phpstan
+PHPSTAN_BIN=./vendor/bin/phpstan
 PHPCS_CODING_STANDARD=PEAR
 PHPCS_IGNORE=
-TMP_STAGING="./src/.tmp_staging/"
+TMP_STAGING=".tmp_staging/"
 PHPMD_RULES=codesize,unusedcode
 PHPMD_EXCLUDE=
 
@@ -41,10 +41,10 @@ if [ ! -x $PHP_CS_FIXER_BIN ]; then
     exit 1
 fi
 
-#if [ ! -x $PHPSTAN_BIN ]; then
-#    echo "PHPStan bin not found or executable -> $PHPSTAN_BIN"
-#    exit 1
-#fi
+if [ ! -x $PHPSTAN_BIN ]; then
+    echo "PHPStan bin not found or executable -> $PHPSTAN_BIN"
+    exit 1
+fi
 
 # stolen from template file
 if git rev-parse --verify HEAD
@@ -196,22 +196,20 @@ if [ $PHP_CS_FIXER_RETVAL -ne 0 ]; then
     exit $PHP_CS_FIXER_RETVAL
 fi
 
-# Larastan
-# https://github.com/baopham/laravel-dynamodb の関係でlevelを4に変更
-#echo "php artisan code:analyse --paths='.tmp_stating' --error-format table --level=4"
-#PHPSTAN_OUTPUT=$(php artisan code:analyse --paths='.tmp_staging/app' --error-format table --level=4)
-#PHPSTAN_RETVAL=$?
-#
-#if [ $PHPSTAN_RETVAL -ne 0 ]; then
-#    if [ "$FILE_OUTPUT" == "1" ]; then
-#        echo "$PHPSTAN_OUTPUT"
-#        echo "$PHPSTAN_OUTPUT" > larastan.log
-#    else
-#        echo "$PHPSTAN_OUTPUT"
-#    fi
-#    # delete temporary copy of staging area
-#    rm -rf $TMP_STAGING
-#    exit $PHPSTAN_RETVAL
-#fi
+echo "$PHPSTAN_BIN analyze $TMP_STAGING -c phpstan.neon --level=max"
+PHPSTAN_OUTPUT=$($PHPSTAN_BIN analyze $TMP_STAGING -c phpstan.neon --level=max)
+PHPSTAN_RETVAL=$?
+
+if [ $PHPSTAN_RETVAL -ne 0 ]; then
+    if [ "$FILE_OUTPUT" == "1" ]; then
+        echo "$PHPSTAN_OUTPUT"
+        echo "$PHPSTAN_OUTPUT" > phpstan.log
+    else
+        echo "$PHPSTAN_OUTPUT"
+    fi
+    # delete temporary copy of staging area
+    rm -rf $TMP_STAGING
+    exit $PHPSTAN_RETVAL
+fi
 
 exit

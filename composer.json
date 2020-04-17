@@ -13,7 +13,8 @@
 		"phpunit/phpunit": "8.5.*",
 		"squizlabs/php_codesniffer": "*",
 		"phpmd/phpmd": "^2.8",
-		"friendsofphp/php-cs-fixer": "^2.16"
+		"friendsofphp/php-cs-fixer": "^2.16",
+		"phpstan/phpstan": "^0.12.18"
 	},
 	"autoload-dev": {
 		"psr-4": {

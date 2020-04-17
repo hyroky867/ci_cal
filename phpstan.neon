@@ -1,0 +1,17 @@
+includes:
+  - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+  bootstrap: phpstan-bootstrap.php
+  autoload_directories:
+    - app
+  inferPrivatePropertyTypeFromConstructor: true
+  checkMissingIterableValueType: false
+  excludes_analyse:
+    - app/Config/*
+    - app/Database/*
+    - app/Views/*
+#  ignoreErrors:
+#    - '#Access to protected property [a-zA-Z0-9\\_]+Model::\$returnType.#'
+#    - '#Method ([a-zA-Z0-9\\_]+)(Controllers)([a-zA-Z0-9\\_]+)(::)([a-zA-Z0-9]+)(\(\)) has no return typehint specified.#'
+#    - '#Call to protected method builder\(\) of class CodeIgniter\\Model.#'
