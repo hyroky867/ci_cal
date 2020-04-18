@@ -12,10 +12,22 @@ CONFIG_FILE=$(dirname $0)/pre-commit-config
 if [ -e $CONFIG_FILE ]; then
     . $CONFIG_FILE
 fi
-#PHPCS_BIN=./vendor/bin/phpcbf
-PHPCS_CODING_STANDARD=PEAR
 PHPCBF_CODING_STANDARD=phpcs.xml
-PHPCS_BIN=/usr/local/bin/phpcbf
+
+PHPCBF_BIN=./vendor/bin/phpcbf
+PHPCS_IGNORE=
+# egrep compatible pattern of files to be checked
+PHPCS_FILE_PATTERN="\.(php|phtml)$"
+
+# ignore warnings
+PHPCS_IGNORE_WARNINGS=1
+
+# encoding
+PHPCS_ENCODING=utf-8
+
+# file_output( 0:none, 1:output phpcs.log )
+FILE_OUTPUT=0
+
 FILES=$(git diff-index --name-only --cached --diff-filter=ACMR $against -- )
 if [ "$FILES" == "" ]; then
     exit 0
@@ -39,11 +51,6 @@ if [ "$PHPCS_IGNORE" != "" ]; then
     IGNORE="--ignore=$PHPCS_IGNORE"
 else
     IGNORE=""
-fi
-if [ "$PHPCS_SNIFFS" != "" ]; then
-    SNIFFS="--sniffs=$PHPCS_SNIFFS"
-else
-    SNIFFS=""
 fi
 if [ "$PHPCS_ENCODING" != "" ]; then
     ENCODING="--encoding=$PHPCS_ENCODING"
@@ -70,5 +77,5 @@ do
         exit 1
     fi
 done
-echo "$PHPCS_BIN -s $IGNORE_WARNINGS --standard=$PHPCBF_CODING_STANDARD $ENCODING $IGNORE $SNIFFS $STAGED_FILES"
-OUTPUT=$($PHPCS_BIN -s $IGNORE_WARNINGS --standard=$PHPCBF_CODING_STANDARD $ENCODING $IGNORE $SNIFFS $STAGED_FILES)
+echo "$PHPCBF_BIN -s $IGNORE_WARNINGS --standard=$PHPCBF_CODING_STANDARD $ENCODING $IGNORE $STAGED_FILES"
+OUTPUT=$($PHPCBF_BIN -s $IGNORE_WARNINGS --standard=$PHPCBF_CODING_STANDARD $ENCODING $IGNORE $STAGED_FILES)

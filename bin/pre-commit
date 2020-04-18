@@ -11,17 +11,22 @@ PHPCS_BIN=./vendor/bin/phpcs
 PHPMD_BIN=./vendor/bin/phpmd
 PHP_CS_FIXER_BIN=./vendor/bin/php-cs-fixer
 PHPSTAN_BIN=./vendor/bin/phpstan
-PHPCS_CODING_STANDARD=PEAR
+PHPCS_CODING_STANDARD=phpcs.xml
 PHPCS_IGNORE=
-TMP_STAGING=".tmp_staging/"
+TMP_STAGING=".tmp_staging"
 PHPMD_RULES=codesize,unusedcode
 PHPMD_EXCLUDE=
+# egrep compatible pattern of files to be checked
+PHPCS_FILE_PATTERN="\.(php|phtml)$"
 
-# parse config
-CONFIG_FILE=$(dirname $0)/pre-commit-config
-if [ -e $CONFIG_FILE ]; then
-    . $CONFIG_FILE
-fi
+# ignore warnings
+PHPCS_IGNORE_WARNINGS=1
+
+# encoding
+PHPCS_ENCODING=utf-8
+
+# file_output( 0:none, 1:output phpcs.log )
+FILE_OUTPUT=0
 
 # simple check if code sniffer is set up correctly
 if [ ! -x $PHPCS_BIN ]; then
@@ -145,8 +150,8 @@ echo `pwd`
 
 # CodeSniffer
 
-echo "$PHPCS_BIN -s $IGNORE_WARNINGS --standard=$PHPCS_CODING_STANDARD $ENCODING $IGNORE $SNIFFS $STAGED_FILES"
-PHPCS_OUTPUT=$($PHPCS_BIN -s $IGNORE_WARNINGS --standard=$PHPCS_CODING_STANDARD $ENCODING $IGNORE $SNIFFS $STAGED_FILES)
+echo "$PHPCS_BIN -s $IGNORE_WARNINGS --standard=$PHPCS_CODING_STANDARD $ENCODING $IGNORE $SNIFFS $STAGED_FILES --colors"
+PHPCS_OUTPUT=$($PHPCS_BIN -s $IGNORE_WARNINGS --standard=$PHPCS_CODING_STANDARD $ENCODING $IGNORE $SNIFFS $STAGED_FILES --colors)
 PHPCS_RETVAL=$?
 
 if [ $PHPCS_RETVAL -ne 0 ]; then
