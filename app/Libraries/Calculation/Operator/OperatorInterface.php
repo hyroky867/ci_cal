@@ -6,5 +6,5 @@ namespace App\Libraries\Calculation\Operator;
 
 interface OperatorInterface
 {
-	public function calc(int $val1, int $val2): int;
+	public function calc(int $val1, int $val2): float;
 }
