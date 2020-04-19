@@ -14,8 +14,7 @@ use CodeIgniter\Test\CIUnitTestCase;
  */
 class InputTest extends CIUnitTestCase
 {
-
-	private Libraries\Input $input;
+	private Libraries\Request\Input $input;
 
 	protected function setUp(): void
 	{
@@ -32,7 +31,7 @@ class InputTest extends CIUnitTestCase
 	 */
 	public function DIの値が空の配列の場合、初期値が入るべき(): void
 	{
-		$this->input = new Libraries\Input([]);
+		$this->input = new Libraries\Request\Input([]);
 
 		$this->assertSame(0, $this->input->getValue1());
 		$this->assertSame(0, $this->input->getValue2());
@@ -44,7 +43,7 @@ class InputTest extends CIUnitTestCase
 	 */
 	public function select用の演算子を配列で取得できるべき(): void
 	{
-		$this->input = new Libraries\Input([]);
+		$this->input = new Libraries\Request\Input([]);
 
 		$expected = [
 			'+',
@@ -66,7 +65,7 @@ class InputTest extends CIUnitTestCase
 			'value2'   => 2,
 			'operator' => $operator,
 		];
-		$this->input = new Libraries\Input($param);
+		$this->input = new Libraries\Request\Input($param);
 
 		$this->assertSame(' selected', $this->input->checkSelect($operator));
 	}
@@ -82,7 +81,7 @@ class InputTest extends CIUnitTestCase
 			'value2'   => 2,
 			'operator' => $operator,
 		];
-		$this->input = new Libraries\Input($param);
+		$this->input = new Libraries\Request\Input($param);
 
 		$this->assertSame('', $this->input->checkSelect('-'));
 	}
